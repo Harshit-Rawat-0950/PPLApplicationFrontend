@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.ferhatozcelik.jetpackcomposetemplate.ui.detail.DetailScreen
 import com.ferhatozcelik.jetpackcomposetemplate.ui.home.MainScreen
+import com.ferhatozcelik.jetpackcomposetemplate.ui.screens.ShiftLogbookScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
@@ -24,6 +25,9 @@ fun NavGraph(navController: NavHostController) {
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) {
             DetailScreen(navController = navController, id = it.arguments?.getInt("id") ?: 0)
+        }
+        composable(Screen.ShiftLogbook.route) {
+            ShiftLogbookScreen()
         }
     }
 }

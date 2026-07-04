@@ -7,6 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.ferhatozcelik.jetpackcomposetemplate.navigation.Screen
@@ -28,6 +29,14 @@ fun MainScreen(
             navController.navigate(Screen.Detail.route + "/123")
         }) {
             Text(text = "Go to Detail")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+            navController.navigate(Screen.ShiftLogbook.route)
+        }) {
+            Text(text = "Go to Shift Logbook")
         }
     }
 }
