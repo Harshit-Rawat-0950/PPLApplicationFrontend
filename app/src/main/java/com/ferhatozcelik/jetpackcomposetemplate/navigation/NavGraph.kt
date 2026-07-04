@@ -8,13 +8,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.ferhatozcelik.jetpackcomposetemplate.ui.detail.DetailScreen
 import com.ferhatozcelik.jetpackcomposetemplate.ui.home.MainScreen
+import com.ferhatozcelik.jetpackcomposetemplate.ui.screens.DashboardScreen
+import com.ferhatozcelik.jetpackcomposetemplate.ui.screens.LoginScreen
+import com.ferhatozcelik.jetpackcomposetemplate.ui.screens.NearMissScreen
 import com.ferhatozcelik.jetpackcomposetemplate.ui.screens.ShiftLogbookScreen
 
 @Composable
 fun NavGraph(navController: NavHostController) {
 
     NavHost(
-        navController = navController, startDestination = Screen.Main.route
+        navController = navController, startDestination = Screen.Login.route
     ) {
 
         composable(Screen.Main.route) {
@@ -27,7 +30,16 @@ fun NavGraph(navController: NavHostController) {
             DetailScreen(navController = navController, id = it.arguments?.getInt("id") ?: 0)
         }
         composable(Screen.ShiftLogbook.route) {
-            ShiftLogbookScreen()
+            ShiftLogbookScreen(navController = navController)
+        }
+        composable(Screen.Login.route) {
+            LoginScreen(navController = navController)
+        }
+        composable(Screen.Dashboard.route) {
+            DashboardScreen(navController = navController)
+        }
+        composable(Screen.NearMiss.route) {
+            NearMissScreen(navController = navController)
         }
     }
 }

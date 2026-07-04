@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ferhatozcelik.jetpackcomposetemplate.ui.components.MinimalistTextField
 import com.ferhatozcelik.jetpackcomposetemplate.ui.theme.PplBrightBlue
 import com.ferhatozcelik.jetpackcomposetemplate.ui.theme.PplDarkBlue
@@ -29,7 +34,7 @@ import com.ferhatozcelik.jetpackcomposetemplate.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShiftLogbookScreen() {
+fun ShiftLogbookScreen(navController: NavController) {
     var assetTag by remember { mutableStateOf("") }
     var dcsDeviations by remember { mutableStateOf("") }
     var standingAlarms by remember { mutableStateOf("") }
@@ -44,6 +49,15 @@ fun ShiftLogbookScreen() {
                         fontWeight = FontWeight.Bold,
                         color = White
                     ) 
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = PplDarkBlue
@@ -107,7 +121,7 @@ fun ShiftLogbookScreen() {
 @Composable
 fun ShiftLogbookScreenPreview() {
     com.ferhatozcelik.jetpackcomposetemplate.ui.theme.MyApplicationTheme {
-        ShiftLogbookScreen()
+        ShiftLogbookScreen(navController = androidx.navigation.compose.rememberNavController())
     }
 }
 
