@@ -1,6 +1,8 @@
 package com.ferhatozcelik.jetpackcomposetemplate.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -19,16 +21,25 @@ import com.ferhatozcelik.jetpackcomposetemplate.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardScreen(navController: NavController) {
+fun NearMissDashboardScreen(navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { 
                     Text(
-                        text = "Dashboard",
+                        text = "Near Miss Dashboard",
                         fontWeight = FontWeight.Bold,
                         color = White
                     ) 
+                },
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigateUp() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                            tint = White
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.smallTopAppBarColors(
                     containerColor = PplDarkBlue
@@ -46,7 +57,7 @@ fun DashboardScreen(navController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Welcome back, Operator!",
+                text = "Select Action",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 color = PplTextDark,
@@ -54,26 +65,9 @@ fun DashboardScreen(navController: NavController) {
                 modifier = Modifier.padding(bottom = 48.dp)
             )
 
-            // Log Book Dashboard Option
+            // Current Nearmisses Option
             Button(
-                onClick = { navController.navigate(Screen.LogbookDashboard.route) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = PplBrightBlue,
-                    contentColor = White
-                ),
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(text = "Shift Logbook", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Near Miss Option
-            Button(
-                onClick = { navController.navigate(Screen.NearMissDashboard.route) },
+                onClick = { navController.navigate(Screen.PastNearMisses.route) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(80.dp),
@@ -83,7 +77,24 @@ fun DashboardScreen(navController: NavController) {
                 ),
                 shape = MaterialTheme.shapes.medium
             ) {
-                Text(text = "Near Miss Reporting", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text(text = "Current Nearmisses", fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Report Nearmiss Option
+            Button(
+                onClick = { navController.navigate(Screen.NearMiss.route) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(80.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = PplBrightBlue,
+                    contentColor = White
+                ),
+                shape = MaterialTheme.shapes.medium
+            ) {
+                Text(text = "Report Nearmiss", fontSize = 20.sp, fontWeight = FontWeight.Bold)
             }
         }
     }

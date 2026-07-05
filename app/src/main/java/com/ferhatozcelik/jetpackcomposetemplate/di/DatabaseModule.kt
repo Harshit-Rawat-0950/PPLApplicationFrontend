@@ -24,4 +24,14 @@ object DatabaseModule {
     fun provideExampleDao(database: AppDatabase): ExampleDao {
         return database.getExampleDao()
     }
+
+    @Provides
+    fun provideNearMissDao(database: AppDatabase): com.ferhatozcelik.jetpackcomposetemplate.data.dao.NearMissDao {
+        return database.getNearMissDao()
+    }
+
+    @Provides
+    fun provideShiftLogbookDao(database: AppDatabase): com.ferhatozcelik.jetpackcomposetemplate.data.dao.ShiftLogbookDao {
+        return database.getShiftLogbookDao()
+    }
 }

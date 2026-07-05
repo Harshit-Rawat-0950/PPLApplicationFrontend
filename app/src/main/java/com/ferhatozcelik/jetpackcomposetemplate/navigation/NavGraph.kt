@@ -41,5 +41,24 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.NearMiss.route) {
             NearMissScreen(navController = navController)
         }
+        composable(Screen.PastLogbooks.route) {
+            com.ferhatozcelik.jetpackcomposetemplate.ui.screens.PastLogbooksScreen(navController = navController)
+        }
+        composable(Screen.LogbookDashboard.route) {
+            com.ferhatozcelik.jetpackcomposetemplate.ui.screens.LogbookDashboardScreen(navController = navController)
+        }
+        composable(Screen.NearMissDashboard.route) {
+            com.ferhatozcelik.jetpackcomposetemplate.ui.screens.NearMissDashboardScreen(navController = navController)
+        }
+        composable(Screen.PastNearMisses.route) {
+            com.ferhatozcelik.jetpackcomposetemplate.ui.screens.PastNearMissesScreen(navController = navController)
+        }
+        composable(
+            route = Screen.LogbookDetail.route,
+            arguments = listOf(androidx.navigation.navArgument("logbookId") { type = androidx.navigation.NavType.IntType })
+        ) { backStackEntry ->
+            val logbookId = backStackEntry.arguments?.getInt("logbookId") ?: 0
+            com.ferhatozcelik.jetpackcomposetemplate.ui.screens.LogbookDetailScreen(navController = navController, logbookId = logbookId)
+        }
     }
 }
