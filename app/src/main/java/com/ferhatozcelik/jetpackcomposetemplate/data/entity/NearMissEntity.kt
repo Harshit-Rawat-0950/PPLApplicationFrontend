@@ -13,5 +13,7 @@ data class NearMissEntity(
     val criticality: Int,
     val probability: Int,
     val riskScore: Int,
-    val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis(),
+    val photoUrl: String? = null,
+    val resolved: Boolean = false
 )

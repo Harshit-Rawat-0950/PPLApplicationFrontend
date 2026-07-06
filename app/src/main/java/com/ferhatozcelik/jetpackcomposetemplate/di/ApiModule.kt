@@ -40,4 +40,9 @@ object ApiModule {
         return retrofit.create(AppApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun providePplApiService(retrofit: Retrofit): com.ferhatozcelik.jetpackcomposetemplate.data.remote.api.PplApiService {
+        return retrofit.create(com.ferhatozcelik.jetpackcomposetemplate.data.remote.api.PplApiService::class.java)
+    }
 }

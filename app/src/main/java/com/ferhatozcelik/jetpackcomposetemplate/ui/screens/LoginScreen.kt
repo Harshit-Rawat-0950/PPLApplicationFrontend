@@ -24,9 +24,22 @@ import com.ferhatozcelik.jetpackcomposetemplate.ui.theme.White
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: com.ferhatozcelik.jetpackcomposetemplate.ui.viewmodel.AuthViewModel = androidx.hilt.navigation.compose.hiltViewModel()
+) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    
+    val loginState by viewModel.loginState.collectAsState()
+
+    LaunchedEffect(loginState) {
+        if (loginState is com.ferhatozcelik.jetpackcomposetemplate.ui.viewmodel.LoginState.Success) {
+            navController.navigate(Screen.Dashboard.route) {
+                popUpTo(Screen.Login.route) { inclusive = true }
+            }
+        }
+    }
 
     Scaffold(
         containerColor = PplLightGrayBlue
@@ -75,23 +88,31 @@ fun LoginScreen(navController: NavController) {
             )
 
             Spacer(modifier = Modifier.height(24.dp))
+            
+            if (loginState is com.ferhatozcelik.jetpackcomposetemplate.ui.viewmodel.LoginState.Error) {
+                Text(
+                    text = (loginState as com.ferhatozcelik.jetpackcomposetemplate.ui.viewmodel.LoginState.Error).message,
+                    color = Color.Red,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
 
             Button(
-                onClick = {
-                    // Navigate to Dashboard
-                    navController.navigate(Screen.Dashboard.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                },
+                onClick = { viewModel.login(username, password) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = PplBrightBlue,
                     contentColor = White
-                )
+                ),
+                enabled = loginState !is com.ferhatozcelik.jetpackcomposetemplate.ui.viewmodel.LoginState.Loading
             ) {
-                Text(text = "Login", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (loginState is com.ferhatozcelik.jetpackcomposetemplate.ui.viewmodel.LoginState.Loading) {
+                    CircularProgressIndicator(color = White, modifier = Modifier.size(24.dp))
+                } else {
+                    Text(text = "Login", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                }
             }
         }
     }

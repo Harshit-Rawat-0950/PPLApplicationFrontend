@@ -230,7 +230,8 @@ fun NearMissScreen(
                             description = description,
                             plantArea = selectedArea,
                             criticality = criticality,
-                            probability = probability
+                            probability = probability,
+                            photoBitmap = capturedImage
                         )
                         Toast.makeText(context, "Near Miss Reported Successfully", Toast.LENGTH_SHORT).show()
                         navController.navigateUp()

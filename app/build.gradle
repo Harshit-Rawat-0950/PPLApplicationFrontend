@@ -125,6 +125,7 @@ dependencies {
     // Glide
     implementation(libs.glide)
     ksp(libs.ksp)
+    implementation("io.coil-kt:coil-compose:2.4.0")
 
     // Firebase
     // implementation(libs.firebase)

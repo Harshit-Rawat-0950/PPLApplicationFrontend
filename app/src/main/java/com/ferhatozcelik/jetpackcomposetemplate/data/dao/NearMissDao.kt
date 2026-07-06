@@ -14,4 +14,7 @@ interface NearMissDao {
 
     @Query("SELECT * FROM near_miss_table ORDER BY timestamp DESC")
     fun getAllNearMisses(): Flow<List<NearMissEntity>>
+
+    @Query("SELECT * FROM near_miss_table WHERE id = :id LIMIT 1")
+    suspend fun getNearMissById(id: Int): NearMissEntity?
 }
