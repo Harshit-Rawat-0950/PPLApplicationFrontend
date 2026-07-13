@@ -296,7 +296,7 @@ fun RamChip(level: Int, isSelected: Boolean, onClick: () -> Unit) {
     
     Box(
         modifier = Modifier
-            .size(48.dp)
+            .size(48.dp)    
             .clip(CircleShape)
             .background(bgColor)
             .clickable { onClick() },

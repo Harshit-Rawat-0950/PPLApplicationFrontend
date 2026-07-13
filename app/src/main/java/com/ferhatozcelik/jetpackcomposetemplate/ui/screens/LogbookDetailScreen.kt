@@ -31,10 +31,11 @@ fun LogbookDetailScreen(
     logbookId: Int,
     viewModel: ShiftLogbookViewModel = hiltViewModel()
 ) {
+    val allLogbooks by viewModel.allLogbooks.collectAsState()
     var logbook by remember { mutableStateOf<ShiftLogbookEntity?>(null) }
 
-    LaunchedEffect(logbookId) {
-        logbook = viewModel.allLogbooks.firstOrNull()?.find { it.id == logbookId }
+    LaunchedEffect(allLogbooks, logbookId) {
+        logbook = allLogbooks.find { it.id == logbookId }
     }
 
     Scaffold(

@@ -6,7 +6,9 @@ import com.ferhatozcelik.jetpackcomposetemplate.data.dao.ShiftLogbookDao
 import com.ferhatozcelik.jetpackcomposetemplate.data.entity.AssetData
 import com.ferhatozcelik.jetpackcomposetemplate.data.entity.ShiftLogbookEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,11 +24,12 @@ class ShiftLogbookViewModel @Inject constructor(
     private val apiService: PplApiService
 ) : ViewModel() {
 
+    private val _allLogbooks = MutableStateFlow<List<ShiftLogbookEntity>>(emptyList())
+    val allLogbooks: StateFlow<List<ShiftLogbookEntity>> = _allLogbooks.asStateFlow()
+
     init {
         fetchRemoteLogbooks()
     }
-
-    val allLogbooks: Flow<List<ShiftLogbookEntity>> = shiftLogbookDao.getAllLogbooks()
 
     fun fetchRemoteLogbooks() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -34,9 +37,9 @@ class ShiftLogbookViewModel @Inject constructor(
                 val response = apiService.getLogbooks()
                 if (response.isSuccessful) {
                     response.body()?.let { dtos ->
-                        shiftLogbookDao.deleteAllLogbooks()
-                        dtos.forEach { dto ->
-                            val entity = ShiftLogbookEntity(
+                        val list = dtos.map { dto ->
+                            ShiftLogbookEntity(
+                                id = dto.id,
                                 date = dto.date,
                                 shift = dto.shift,
                                 area = dto.area,
@@ -50,8 +53,8 @@ class ShiftLogbookViewModel @Inject constructor(
                                     )
                                 }
                             )
-                            shiftLogbookDao.insertLogbook(entity)
                         }
+                        _allLogbooks.value = list
                     }
                 }
             } catch (e: Exception) {
@@ -67,18 +70,7 @@ class ShiftLogbookViewModel @Inject constructor(
         submitterId: String,
         assets: List<AssetData>
     ) {
-        val entity = ShiftLogbookEntity(
-            date = date,
-            shift = shift,
-            area = area,
-            submitterId = submitterId,
-            assets = assets
-        )
         viewModelScope.launch(Dispatchers.IO) {
-            // 1. Save locally
-            shiftLogbookDao.insertLogbook(entity)
-            
-            // 2. Push to backend
             try {
                 val dto = ShiftLogbookDto(
                     date = date,
@@ -94,7 +86,10 @@ class ShiftLogbookViewModel @Inject constructor(
                         )
                     }
                 )
-                apiService.submitLogbook(dto)
+                val response = apiService.submitLogbook(dto)
+                if (response.isSuccessful) {
+                    fetchRemoteLogbooks()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

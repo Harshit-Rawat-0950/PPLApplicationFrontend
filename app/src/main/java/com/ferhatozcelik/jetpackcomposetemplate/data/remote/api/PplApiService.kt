@@ -18,9 +18,15 @@ interface PplApiService {
 
     @Multipart
     @POST("/api/v1/nearmiss/submit")
-    suspend fun submitNearMiss(
+    suspend fun submitNearMissWithPhoto(
         @Part("nearMiss") nearMissJson: RequestBody,
-        @Part photo: MultipartBody.Part?
+        @Part photo: MultipartBody.Part
+    ): Response<Unit>
+
+    @Multipart
+    @POST("/api/v1/nearmiss/submit")
+    suspend fun submitNearMissWithoutPhoto(
+        @Part("nearMiss") nearMissJson: RequestBody
     ): Response<Unit>
 
     @GET("/api/v1/nearmiss")

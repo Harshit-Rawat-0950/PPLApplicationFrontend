@@ -16,14 +16,14 @@ data class LoginResponse(
 
 data class NearMissDto(
     val id: Int = 0,
-    val title: String,
-    val description: String,
-    val plantArea: String,
-    val type: String,
-    val criticality: String,
-    val probability: String,
-    val riskScore: Int,
-    val timestamp: String,
+    val title: String? = null,
+    val description: String? = null,
+    val plantArea: String? = null,
+    val type: String? = null,
+    val criticality: String? = null,
+    val probability: String? = null,
+    val riskScore: Int = 0,
+    val timestamp: String? = null,
     val photoUrl: String? = null,
     val resolved: Boolean = false
 )
@@ -36,6 +36,7 @@ data class AssetDataDto(
 )
 
 data class ShiftLogbookDto(
+    val id: Int = 0,
     val date: String,
     val shift: String,
     val area: String,
