@@ -46,12 +46,16 @@ fun NearMissScreen(
     var expandedArea by remember { mutableStateOf(false) }
     var selectedArea by remember { mutableStateOf("Select Area") }
     
+    var expandedType by remember { mutableStateOf(false) }
+    var selectedType by remember { mutableStateOf("Select Type") }
+    val types = listOf("Unsafe Action", "Unsafe Site")
+    
     var criticality by remember { mutableStateOf(0) }
     var probability by remember { mutableStateOf(0) }
     
     var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
 
-    val areas = listOf("PAP", "SAP", "DAP", "Offside", "Jetty")
+    val areas = listOf("PAP", "SAP", "DAP", "Offsite", "Jetty")
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -124,6 +128,39 @@ fun NearMissScreen(
                             onClick = {
                                 selectedArea = selectionOption
                                 expandedArea = false
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Type Dropdown
+            ExposedDropdownMenuBox(
+                expanded = expandedType,
+                onExpandedChange = { expandedType = !expandedType },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                OutlinedTextField(
+                    value = selectedType,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Near Miss Type") },
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedType) },
+                    modifier = Modifier.menuAnchor().fillMaxWidth(),
+                    colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                )
+                ExposedDropdownMenu(
+                    expanded = expandedType,
+                    onDismissRequest = { expandedType = false }
+                ) {
+                    types.forEach { selectionOption ->
+                        DropdownMenuItem(
+                            text = { Text(selectionOption) },
+                            onClick = {
+                                selectedType = selectionOption
+                                expandedType = false
                             }
                         )
                     }
@@ -222,13 +259,14 @@ fun NearMissScreen(
 
             Button(
                 onClick = {
-                    if (title.isBlank() || selectedArea == "Select Area" || criticality == 0 || probability == 0) {
+                    if (title.isBlank() || selectedArea == "Select Area" || selectedType == "Select Type" || criticality == 0 || probability == 0) {
                         Toast.makeText(context, "Please fill all fields and select RAM levels", Toast.LENGTH_SHORT).show()
                     } else {
                         viewModel.insertNearMiss(
                             title = title,
                             description = description,
                             plantArea = selectedArea,
+                            type = selectedType,
                             criticality = criticality,
                             probability = probability,
                             photoBitmap = capturedImage

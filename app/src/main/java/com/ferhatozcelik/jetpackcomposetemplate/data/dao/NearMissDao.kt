@@ -12,6 +12,9 @@ interface NearMissDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNearMiss(nearMiss: NearMissEntity)
 
+    @Query("DELETE FROM near_miss_table")
+    suspend fun deleteAllNearMisses()
+
     @Query("SELECT * FROM near_miss_table ORDER BY timestamp DESC")
     fun getAllNearMisses(): Flow<List<NearMissEntity>>
 

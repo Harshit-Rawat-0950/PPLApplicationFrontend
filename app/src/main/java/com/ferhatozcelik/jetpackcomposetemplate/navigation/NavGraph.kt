@@ -53,6 +53,9 @@ fun NavGraph(navController: NavHostController) {
         composable(Screen.PastNearMisses.route) {
             com.ferhatozcelik.jetpackcomposetemplate.ui.screens.PastNearMissesScreen(navController = navController)
         }
+        composable(Screen.WorkPermit.route) {
+            com.ferhatozcelik.jetpackcomposetemplate.ui.screens.WorkPermitScreen(navController = navController)
+        }
         composable(
             route = Screen.LogbookDetail.route,
             arguments = listOf(androidx.navigation.navArgument("logbookId") { type = androidx.navigation.NavType.IntType })

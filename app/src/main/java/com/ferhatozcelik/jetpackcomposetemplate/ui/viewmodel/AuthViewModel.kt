@@ -10,9 +10,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.ferhatozcelik.jetpackcomposetemplate.util.SessionManager
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val apiService: PplApiService
+    private val apiService: PplApiService,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
@@ -26,7 +29,8 @@ class AuthViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null) {
-                        // In a real app, save token to DataStore here
+                        sessionManager.saveAuthToken(body.token)
+                        sessionManager.saveUserDetails(body.userId, body.name, body.role)
                         _loginState.value = LoginState.Success(body.userId)
                     } else {
                         _loginState.value = LoginState.Error("Empty response body")

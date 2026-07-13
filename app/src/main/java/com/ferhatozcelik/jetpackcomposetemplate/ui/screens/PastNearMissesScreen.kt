@@ -32,6 +32,19 @@ fun PastNearMissesScreen(
 ) {
     val nearMisses by viewModel.allNearMisses.collectAsState(initial = emptyList())
     var selectedNearMiss by remember { mutableStateOf<NearMissEntity?>(null) }
+    
+    var sortByDesc by remember { mutableStateOf(true) }
+    var minScoreStr by remember { mutableStateOf("") }
+    var selectedFilterArea by remember { mutableStateOf("All") }
+    var expandedFilterArea by remember { mutableStateOf(false) }
+    val areas = listOf("All", "PAP", "SAP", "DAP", "Offsite", "Jetty")
+
+    val filteredNearMisses = nearMisses.filter {
+        val minScore = minScoreStr.toIntOrNull() ?: 0
+        it.riskScore >= minScore && (selectedFilterArea == "All" || it.plantArea == selectedFilterArea)
+    }.let { list ->
+        if (sortByDesc) list.sortedByDescending { it.riskScore } else list.sortedBy { it.riskScore }
+    }
 
     Scaffold(
         topBar = {
@@ -49,20 +62,79 @@ fun PastNearMissesScreen(
         },
         containerColor = PplLightGrayBlue
     ) { paddingValues ->
-        if (nearMisses.isEmpty()) {
+        if (filteredNearMisses.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = androidx.compose.ui.Alignment.Center) {
-                Text("No Near Misses Reported", color = PplTextDark)
+                Text("No Near Misses Found", color = PplTextDark)
             }
         } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(nearMisses) { entry ->
-                    NearMissCard(entry = entry, onClick = { selectedNearMiss = entry })
+            Column(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+                
+                // Filtering UI
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = White),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Filters & Sorting", fontWeight = FontWeight.Bold, color = PplDarkBlue)
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Text("Sort by Score:")
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Button(onClick = { sortByDesc = !sortByDesc }) {
+                                Text(if (sortByDesc) "Desc" else "Asc")
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = minScoreStr,
+                            onValueChange = { minScoreStr = it },
+                            label = { Text("Min Risk Score") },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        
+                        ExposedDropdownMenuBox(
+                            expanded = expandedFilterArea,
+                            onExpandedChange = { expandedFilterArea = !expandedFilterArea },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            OutlinedTextField(
+                                value = selectedFilterArea,
+                                onValueChange = {},
+                                readOnly = true,
+                                label = { Text("Filter by Area") },
+                                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedFilterArea) },
+                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors()
+                            )
+                            ExposedDropdownMenu(
+                                expanded = expandedFilterArea,
+                                onDismissRequest = { expandedFilterArea = false }
+                            ) {
+                                areas.forEach { selectionOption ->
+                                    DropdownMenuItem(
+                                        text = { Text(selectionOption) },
+                                        onClick = {
+                                            selectedFilterArea = selectionOption
+                                            expandedFilterArea = false
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(filteredNearMisses) { entry ->
+                        NearMissCard(entry = entry, onClick = { selectedNearMiss = entry })
+                    }
                 }
             }
         }
@@ -103,6 +175,7 @@ fun NearMissDetailDialog(
                 Text("Title: ${entry.title}", fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Area: ${entry.plantArea}")
+                Text("Type: ${entry.type}")
                 Text("Risk Score: ${entry.riskScore}")
                 Text("Description: ${entry.description}")
                 Spacer(modifier = Modifier.height(8.dp))
@@ -152,7 +225,7 @@ fun NearMissCard(entry: NearMissEntity, onClick: () -> Unit) {
                 }
             }
             Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Area: ${entry.plantArea}", color = PplTextDark, style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Area: ${entry.plantArea} | Type: ${entry.type}", color = PplTextDark, style = MaterialTheme.typography.bodyMedium)
             Text(text = "Description: ${entry.description}", color = PplTextDark, style = MaterialTheme.typography.bodySmall)
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = "Risk Score: ${entry.riskScore} (C:${entry.criticality} P:${entry.probability})", color = PplTextDark, fontWeight = FontWeight.Bold)

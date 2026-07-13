@@ -34,11 +34,14 @@ class NearMissViewModel @Inject constructor(
             try {
                 val response = apiService.getNearMisses()
                 if (response.isSuccessful) {
-                    response.body()?.forEach { dto ->
-                        val entity = NearMissEntity(
+                    response.body()?.let { dtos ->
+                        nearMissDao.deleteAllNearMisses() // Clear local cache to prevent duplicates
+                        dtos.forEach { dto ->
+                            val entity = NearMissEntity(
                             title = dto.title,
                             description = dto.description,
                             plantArea = dto.plantArea,
+                            type = dto.type,
                             criticality = dto.criticality.toIntOrNull() ?: 1,
                             probability = dto.probability.toIntOrNull() ?: 1,
                             riskScore = dto.riskScore,
@@ -47,6 +50,7 @@ class NearMissViewModel @Inject constructor(
                         )
                         // Ignore conflicts or just insert
                         nearMissDao.insertNearMiss(entity)
+                        }
                     }
                 }
             } catch (e: Exception) {
@@ -59,6 +63,7 @@ class NearMissViewModel @Inject constructor(
         title: String,
         description: String,
         plantArea: String,
+        type: String,
         criticality: Int,
         probability: Int,
         photoBitmap: android.graphics.Bitmap? = null
@@ -68,6 +73,7 @@ class NearMissViewModel @Inject constructor(
             title = title,
             description = description,
             plantArea = plantArea,
+            type = type,
             criticality = criticality,
             probability = probability,
             riskScore = riskScore
@@ -83,6 +89,7 @@ class NearMissViewModel @Inject constructor(
                     title = title,
                     description = description,
                     plantArea = plantArea,
+                    type = type,
                     criticality = criticality.toString(),
                     probability = probability.toString(),
                     riskScore = riskScore,

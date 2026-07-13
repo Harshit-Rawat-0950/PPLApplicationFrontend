@@ -33,22 +33,25 @@ class ShiftLogbookViewModel @Inject constructor(
             try {
                 val response = apiService.getLogbooks()
                 if (response.isSuccessful) {
-                    response.body()?.forEach { dto ->
-                        val entity = ShiftLogbookEntity(
-                            date = dto.date,
-                            shift = dto.shift,
-                            area = dto.area,
-                            submitterId = dto.submitterId,
-                            assets = dto.assets.map {
-                                AssetData(
-                                    assetTag = it.assetTag,
-                                    standingAlarms = it.standingAlarms,
-                                    maintenanceStatus = it.maintenanceStatus,
-                                    maintenanceDone = it.maintenanceDone
-                                )
-                            }
-                        )
-                        shiftLogbookDao.insertLogbook(entity)
+                    response.body()?.let { dtos ->
+                        shiftLogbookDao.deleteAllLogbooks()
+                        dtos.forEach { dto ->
+                            val entity = ShiftLogbookEntity(
+                                date = dto.date,
+                                shift = dto.shift,
+                                area = dto.area,
+                                submitterId = dto.submitterId,
+                                assets = dto.assets.map {
+                                    AssetData(
+                                        assetTag = it.assetTag,
+                                        standingAlarms = it.standingAlarms,
+                                        maintenanceStatus = it.maintenanceStatus,
+                                        maintenanceDone = it.maintenanceDone
+                                    )
+                                }
+                            )
+                            shiftLogbookDao.insertLogbook(entity)
+                        }
                     }
                 }
             } catch (e: Exception) {

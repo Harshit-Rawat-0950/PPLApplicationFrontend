@@ -12,6 +12,9 @@ interface ShiftLogbookDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLogbook(logbook: ShiftLogbookEntity)
 
+    @Query("DELETE FROM shift_logbook_table")
+    suspend fun deleteAllLogbooks()
+
     @Query("SELECT * FROM shift_logbook_table ORDER BY timestamp DESC")
     fun getAllLogbooks(): Flow<List<ShiftLogbookEntity>>
     

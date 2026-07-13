@@ -10,6 +10,7 @@ data class NearMissEntity(
     val title: String,
     val description: String,
     val plantArea: String,
+    val type: String,
     val criticality: Int,
     val probability: Int,
     val riskScore: Int,

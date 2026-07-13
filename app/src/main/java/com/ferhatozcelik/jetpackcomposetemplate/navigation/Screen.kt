@@ -11,6 +11,7 @@ sealed class Screen(val route: String) {
     object LogbookDashboard : Screen("logbook_dashboard_screen")
     object NearMissDashboard : Screen("near_miss_dashboard_screen")
     object PastNearMisses : Screen("past_near_misses_screen")
+    object WorkPermit : Screen("work_permit_screen")
     object LogbookDetail : Screen("logbook_detail/{logbookId}") {
         fun createRoute(logbookId: Int) = "logbook_detail/$logbookId"
     }

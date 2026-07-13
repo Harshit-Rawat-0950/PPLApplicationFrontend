@@ -30,7 +30,7 @@ fun PastLogbooksScreen(
     val logbooks by viewModel.allLogbooks.collectAsState(initial = emptyList())
 
     val shifts = listOf("All", "Morning Shift (06:00 - 14:00)", "Afternoon Shift (14:00 - 22:00)", "Night Shift (22:00 - 06:00)")
-    val areas = listOf("All", "PAP", "SAP", "DAP", "Offside", "Jetty")
+    val areas = listOf("All", "PAP", "SAP", "DAP", "Offsite", "Jetty")
 
     var expandedShift by remember { mutableStateOf(false) }
     var filterShift by remember { mutableStateOf(shifts[0]) }

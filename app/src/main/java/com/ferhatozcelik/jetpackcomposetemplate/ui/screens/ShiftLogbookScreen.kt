@@ -52,7 +52,7 @@ fun ShiftLogbookScreen(
 
     // Options
     val shifts = listOf("Morning Shift (06:00 - 14:00)", "Afternoon Shift (14:00 - 22:00)", "Night Shift (22:00 - 06:00)")
-    val areas = listOf("PAP", "SAP", "DAP", "Offside", "Jetty")
+    val areas = listOf("PAP", "SAP", "DAP", "Offsite", "Jetty")
 
     // State
     var expandedShift by remember { mutableStateOf(false) }
